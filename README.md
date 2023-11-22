@@ -22,3 +22,5 @@ I suppose that the environment is configured correctly, so that in order to run 
 # Photo
 
 ![board](images/board.jpg)
+
+If you found a bug please contact me [here](https://andre-i.eu/#contactme).
