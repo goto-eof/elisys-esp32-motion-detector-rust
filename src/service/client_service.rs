@@ -16,7 +16,7 @@ impl ClientService {
         }
     }
 
-    pub fn post_request(&self, mac_address: &str) -> anyhow::Result<(), anyhow::Error> {
+    pub fn send_alert(&self, mac_address: &str) -> anyhow::Result<(), anyhow::Error> {
         let mut client = HttpClient::wrap(EspHttpConnection::new(&Default::default())?);
 
         let payload = serde_json::to_string(&RequestAlert::new(mac_address.to_owned())).unwrap();

@@ -22,7 +22,7 @@ pub fn orchestrate() {
             }
             let mac_address = peripheral_service.get_mac_address();
             let mac_address = &mac_address.as_str();
-            if client_service.post_request(mac_address).is_err() {
+            if client_service.send_alert(mac_address).is_err() {
                 peripheral_service.led_blink_2_time_long();
                 detection = false;
             } else {
