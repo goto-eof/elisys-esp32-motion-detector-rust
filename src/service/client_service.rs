@@ -1,11 +1,9 @@
+use crate::dto::{request_alert::RequestAlert, request_i_am_alive::RequestIAmAlive};
 use anyhow::{Error, Ok};
 use embedded_svc::{http::client::Client as HttpClient, io::Write, utils::io};
 use esp_idf_svc::http::client::EspHttpConnection;
 use esp_idf_sys as _;
 use log::{error, info};
-use serde::Serialize;
-
-use crate::dto::{request_alert::RequestAlert, request_i_am_alive::RequestIAmAlive};
 
 pub struct ClientService {
     alert_url: String,
