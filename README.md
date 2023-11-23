@@ -15,6 +15,14 @@ Motion Detector application uses 3 devices:
 When the ESP32 is turned on, the application tries to establish an WiFi connection. If the device fails to connect to the WiFi, the application will retry until it succeeds. Then the led will blink one time for one second: this means that the software is configured correctly. After a movement detection, a post request is made which contains the MAC address wrapped in a JSON, useful to identify the device that sent the request. If this request was sent successfully then the the led blinks for less that one second and the buzzer emits a short sound. If the request to the server fails, the led blinks for 2 times. The request then is handled by the server, that I wrote using Java (Spring Boot), and a new message is sent to a Discord channel. So that I receive a notification on my smartphone. If the notification was sent successfully, the server sends a positive status, else, a false is returned wrapped in a JSON.
 At the beginning of the loop, is sent an ACK to the server that allows to know if the device is online. The ACK time interval is configurable.
 
+# Features
+
+- WiFi auto-reconnection
+- customizable
+- motion detection alert
+- is alive ACK
+- download configuration from server (**to be implemented**)
+
 # How to configure and install it?
 
 Before installing the Motion Detector application on a ESP32, it is necessary to rename the `src/config/config.sample.rs` to `src/config/config.rs`. Then you should change the configuration in the `config.rs` by defining your WiFi SSID, password and your remote server alert request handler.
