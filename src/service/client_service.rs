@@ -5,30 +5,54 @@ use esp_idf_sys as _;
 use log::{error, info};
 use serde::Serialize;
 
+use crate::dto::{request_alert::RequestAlert, request_i_am_alive::RequestIAmAlive};
+
 pub struct ClientService {
     alert_url: String,
+    i_am_alive_url: String,
 }
 
 impl ClientService {
-    pub fn new(alert_url: &str) -> ClientService {
+    pub fn new(alert_url: &str, i_am_alive_url: &str) -> ClientService {
         ClientService {
             alert_url: alert_url.to_owned(),
+            i_am_alive_url: i_am_alive_url.to_owned(),
         }
     }
 
     pub fn send_alert(&self, mac_address: &str) -> anyhow::Result<(), anyhow::Error> {
-        let mut client = HttpClient::wrap(EspHttpConnection::new(&Default::default())?);
+        let client = HttpClient::wrap(EspHttpConnection::new(&Default::default())?);
 
         let payload = serde_json::to_string(&RequestAlert::new(mac_address.to_owned())).unwrap();
         let payload = payload.as_bytes();
 
+        self.post_request(payload, client, &self.alert_url)
+    }
+
+    pub fn send_i_am_alive(&self, mac_address: &str) -> anyhow::Result<(), anyhow::Error> {
+        let client = HttpClient::wrap(EspHttpConnection::new(&Default::default())?);
+        let payload = serde_json::to_string(&RequestIAmAlive::new(mac_address.to_owned())).unwrap();
+        let payload = payload.as_bytes();
+
+        info!("trying to send is alive ack...");
+        let result = self.post_request(payload, client, &self.i_am_alive_url);
+        info!("ack (perhaps) sent");
+        return result;
+    }
+
+    fn post_request(
+        &self,
+        payload: &[u8],
+        mut client: HttpClient<EspHttpConnection>,
+        url: &str,
+    ) -> Result<(), Error> {
         let content_length_header = format!("{}", payload.len());
         let headers = [
             ("content-type", "application/json"),
             ("content-length", &*content_length_header),
         ];
 
-        let request = client.post(&self.alert_url, &headers);
+        let request = client.post(url, &headers);
 
         if request.is_err() {
             let message = format!("connection error: {:?}", request.err());
@@ -47,7 +71,7 @@ impl ClientService {
             error!("{}", message);
             return Err(Error::msg(message));
         }
-        info!("-> POST {}", self.alert_url);
+        info!("-> POST {}", url);
         let response = request.submit();
         if response.is_err() {
             let message = format!("connection error while trying to read response");
@@ -84,19 +108,5 @@ impl ClientService {
             while response.read(&mut buf).unwrap_or(0) > 0 {}
         }
         Ok(())
-    }
-}
-
-#[derive(Serialize)]
-#[warn(non_snake_case)]
-struct RequestAlert {
-    macAddress: String,
-}
-
-impl RequestAlert {
-    pub fn new(mac_address: String) -> RequestAlert {
-        RequestAlert {
-            macAddress: mac_address,
-        }
     }
 }
