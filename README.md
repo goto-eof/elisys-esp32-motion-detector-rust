@@ -26,7 +26,7 @@ At the beginning of the loop, is sent an ACK to the server that allows to know i
 # How to configure and install it?
 
 Before installing the Motion Detector application on a ESP32, it is necessary to rename the `src/config/config.sample.rs` to `src/config/config.rs`. Then you should change the configuration in the `config.rs` by defining your WiFi SSID, password and your remote server alert request handler.
-I suppose that the environment is configured correctly, so that in order to run ESP32 Motion Detector application on an ESP32 device just run `cargo clean && cargo build && cargo run` (sometime I succeed in installing the software by doing a simple `cargo run`, other times i had to hold the boot button of ESP32).
+I suppose that the environment is configured correctly, so that in order to run ESP32 Motion Detector application on an ESP32 device just run `cargo clean && cargo build && cargo run` (sometime I succeeded in installing the software by doing a simple `cargo run`, other times i had to hold the boot button of ESP32).
 
 # Photo
 
