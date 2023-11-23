@@ -16,10 +16,11 @@ pub fn orchestrate() {
     let mut timer: u64 = 0;
     peripheral_service.led_blink_1_time_long();
     let start = Instant::now();
+    let mac_address = peripheral_service.get_mac_address();
+
     loop {
         let duration = start.elapsed();
         if duration.as_secs() % config::I_AM_ALIVE_SECONDS == 0 && timer != duration.as_secs() {
-            let mac_address = peripheral_service.get_mac_address();
             if client_service.send_i_am_alive(&mac_address).is_err() {
                 log::error!("failed to send is alive ack");
             }
@@ -36,9 +37,7 @@ pub fn orchestrate() {
                 peripheral_service.led_blink_3_time_long();
                 thread_util::sleep_short();
             }
-            let mac_address = peripheral_service.get_mac_address();
-            let mac_address = &mac_address.as_str();
-            if client_service.send_alert(mac_address).is_err() {
+            if client_service.send_alert(&mac_address).is_err() {
                 peripheral_service.led_blink_2_time_long();
                 detection = false;
             } else {
@@ -47,6 +46,6 @@ pub fn orchestrate() {
                 detection = true;
             }
         }
-        thread_util::sleep_time(20);
+        thread_util::sleep_time(10);
     }
 }
