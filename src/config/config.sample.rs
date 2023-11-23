@@ -10,4 +10,4 @@ pub const ALERT_URL: &str = "http://server_url:8080/alert";
 // endpoint on which the server is informed that the device is alive
 pub const I_AM_ALIVE_URL: &str = "http://server_url:8080/IAmAlive";
 // time interval between is alive requests
-pub const I_AM_ALIVE_SECONDS: u64 = 30;
+pub const I_AM_ALIVE_INTERVAL_SECONDS: u64 = 30;

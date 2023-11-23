@@ -20,7 +20,9 @@ pub fn orchestrate() {
 
     loop {
         let duration = start.elapsed();
-        if duration.as_secs() % config::I_AM_ALIVE_SECONDS == 0 && timer != duration.as_secs() {
+        if duration.as_secs() % config::I_AM_ALIVE_INTERVAL_SECONDS == 0
+            && timer != duration.as_secs()
+        {
             if client_service.send_i_am_alive(&mac_address).is_err() {
                 log::error!("failed to send is alive ack");
             }
