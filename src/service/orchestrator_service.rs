@@ -29,6 +29,11 @@ pub fn orchestrate() {
             timer = duration.as_secs();
         }
 
+        // info!(
+        //     "START: motion: {}, detected: {}",
+        //     peripheral_service.is_motion_detected(),
+        //     detection
+        // );
         if !peripheral_service.is_motion_detected() && detection {
             info!("no detection");
             detection = false;
@@ -48,6 +53,12 @@ pub fn orchestrate() {
                 detection = true;
             }
         }
-        thread_util::sleep_time(10);
+
+        // info!(
+        //     "END: motion: {}, detected: {}",
+        //     peripheral_service.is_motion_detected(),
+        //     detection
+        // );
+        thread_util::sleep_time(20);
     }
 }
