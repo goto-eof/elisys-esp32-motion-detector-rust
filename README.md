@@ -2,6 +2,8 @@
 
 Motion Detector and Server Notifier (Rust) is a motion detector application for ESP32 device (should be [this one](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/hw-reference/esp32/get-started-devkitc.html#get-started-esp32-devkitc-board-front)), implemented using Rust programming language, that allows to detect movements and send an alert to a server which will send a notification to a smartphone. **Please refer to the `How to configure and install it?` section if your application does not compiles** (it is a configuration issue).
 
+The server side is still a work in progress. I will push it when it will be ready.
+
 # Architecture
 
 Motion Detector application uses 3 devices:
