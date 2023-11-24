@@ -21,7 +21,7 @@ At the beginning of the loop, is sent an ACK to the server that allows to know i
 - customizable
 - motion detection alert
 - is alive ACK
-- download configuration from server (**to be implemented**)
+- download configuration from server
 
 # How to configure and install it?
 
@@ -30,7 +30,13 @@ I suppose that the environment is configured correctly, so that in order to run 
 
 # Photo
 
+### Breadboard
+
 ![board](images/board.jpg)
+
+### Sensor settings
+
+![board](images/motion_sensor.jpg)
 
 I developed this software on Linux (Ubuntu). For more info about how to configure your environment you can take a look [here](https://github.com/goto-eof/esp32-morse-rust/tree/master/morse_esp32).
 
