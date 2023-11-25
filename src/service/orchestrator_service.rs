@@ -3,14 +3,11 @@ use super::{
     peripheral_service::PeripheralService,
 };
 use crate::{
-    config::config::{
-        self, CONFIGURATION_URL, DEFAULT_ALERT_URL, DEFAULT_I_AM_ALIVE_INTERVAL_SECONDS,
-        DEFAULT_I_AM_ALIVE_URL,
-    },
+    config::config::{self, CONFIGURATION_URL},
     dto::config_response::Configuration,
+    service::client_service::get_default_configuration,
     util::thread_util,
 };
-use anyhow::Error;
 use core::result::Result::Ok as StandardOk;
 use log::{error, info};
 use std::time::Instant;
@@ -28,6 +25,7 @@ pub fn orchestrate() {
                 error!("Could not download the remote configuration. REMOTE CONFIGURATION DOWNLOAD IS MANDATORY. Terminating the application...");
                 return;
             }
+            peripheral_service.led_blink_3_time_short();
             get_default_configuration(e)
         }),
         StandardOk(config) => Some(config),
@@ -55,15 +53,11 @@ pub fn orchestrate() {
         {
             if client_service.send_i_am_alive(&mac_address).is_err() {
                 log::error!("failed to send is alive ack");
+                peripheral_service.led_blink_2_time_short();
             }
             timer = duration.as_secs();
         }
 
-        // info!(
-        //     "START: motion: {}, detected: {}",
-        //     peripheral_service.is_motion_detected(),
-        //     detection
-        // );
         if !peripheral_service.is_motion_detected() && detection {
             info!("no detection");
             detection = false;
@@ -84,24 +78,6 @@ pub fn orchestrate() {
             }
         }
 
-        // info!(
-        //     "END: motion: {}, detected: {}",
-        //     peripheral_service.is_motion_detected(),
-        //     detection
-        // );
         thread_util::sleep_time(20);
-    }
-}
-
-pub fn get_default_configuration(e: Error) -> Configuration {
-    error!(
-        "Error while trying to load configuration from remote server: {:?}",
-        e
-    );
-    Configuration {
-        alert_endpoint: DEFAULT_ALERT_URL.to_owned(),
-        crontab: "* * * * *".to_owned(),
-        i_am_alive_endpoint: DEFAULT_I_AM_ALIVE_URL.to_owned(),
-        i_am_alive_interval_seconds: DEFAULT_I_AM_ALIVE_INTERVAL_SECONDS,
     }
 }

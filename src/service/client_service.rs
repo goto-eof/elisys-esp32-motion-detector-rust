@@ -1,6 +1,11 @@
-use crate::dto::{
-    config_request::ConfigRequest, config_response::Configuration, request_alert::RequestAlert,
-    request_i_am_alive::RequestIAmAlive,
+use crate::{
+    config::config::{
+        DEFAULT_ALERT_URL, DEFAULT_I_AM_ALIVE_INTERVAL_SECONDS, DEFAULT_I_AM_ALIVE_URL,
+    },
+    dto::{
+        config_request::ConfigRequest, config_response::Configuration, request_alert::RequestAlert,
+        request_i_am_alive::RequestIAmAlive,
+    },
 };
 use anyhow::{Error, Ok};
 use embedded_svc::{http::client::Client as HttpClient, io::Write, utils::io};
@@ -149,8 +154,21 @@ fn post_request(
     } else {
         let bytes_read = bytes_read.unwrap();
         return match std::str::from_utf8(&buf[0..bytes_read]) {
-            Err(e) => Err(Error::msg(format!("args"))),
+            Err(e) => Err(Error::msg(format!("{:?}", e))),
             StandardOk(str) => Ok(str.to_owned()),
         };
+    }
+}
+
+pub fn get_default_configuration(e: Error) -> Configuration {
+    error!(
+        "Error while trying to load configuration from remote server: {:?}",
+        e
+    );
+    Configuration {
+        alert_endpoint: DEFAULT_ALERT_URL.to_owned(),
+        crontab: "* * * * *".to_owned(),
+        i_am_alive_endpoint: DEFAULT_I_AM_ALIVE_URL.to_owned(),
+        i_am_alive_interval_seconds: DEFAULT_I_AM_ALIVE_INTERVAL_SECONDS,
     }
 }
