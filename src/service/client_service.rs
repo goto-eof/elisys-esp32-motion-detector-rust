@@ -130,7 +130,7 @@ fn post_request(
         error!("{}", message);
         return Err(Error::msg(message));
     }
-    info!("-> GET {}", url);
+    info!("-> POST {}", url);
     let response = request.submit();
     if response.is_err() {
         let message = format!("connection error while trying to read response");
