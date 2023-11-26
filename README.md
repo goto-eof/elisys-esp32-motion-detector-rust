@@ -26,6 +26,7 @@ At the beginning of the loop, is sent an ACK to the server that allows to know i
 - motion detection alert
 - is alive ACK
 - download configuration from server
+- activation time configuration
 
 # How to configure and install it?
 

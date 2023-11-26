@@ -15,3 +15,6 @@ pub const DEFAULT_I_AM_ALIVE_INTERVAL_SECONDS: u64 = 30;
 pub const CONFIGURATION_URL: &str = "http://server_url:8080/api/v1/sensor/configuration";
 // if enabled, if cannot download configuration then will terminate the application
 pub const IS_REMOTE_CONFIGURATION_MANDATORY: bool = false;
+// This is the default crontab value if server value is wrong
+pub const DEFAULT_CRONTAB: &str =
+    "0-59   0-59   0-23     1-31       Jan-Dec  Mon,Tue,Wed,Thu,Fri,Sat,Sun  2023-2100";
