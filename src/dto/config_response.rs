@@ -9,4 +9,6 @@ pub struct Configuration {
     #[serde(rename = "iAmAliveIntervalSeconds")]
     pub i_am_alive_interval_seconds: u64,
     pub crontab: String,
+    #[serde(rename = "timezoneOffsetSec")]
+    pub timezone_offset: i32,
 }

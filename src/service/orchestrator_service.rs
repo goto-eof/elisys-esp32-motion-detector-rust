@@ -8,12 +8,12 @@ use crate::{
     service::client_service::get_default_configuration,
     util::thread_util,
 };
-use chrono::Utc;
+use chrono::{FixedOffset, Utc};
 use core::result::Result::Ok as StandardOk;
 use cron::Schedule;
 use esp_idf_svc::sntp;
 use esp_idf_svc::sntp::SyncStatus;
-use log::{error, info};
+use log::{error, info, warn};
 use std::str::FromStr;
 use std::time::Instant;
 pub fn orchestrate() {
@@ -55,13 +55,14 @@ pub fn orchestrate() {
     let mut schedule = Schedule::from_str(&config::DEFAULT_CRONTAB).unwrap();
     let schedule_result = Schedule::from_str(&configuration.crontab);
     if schedule_result.is_err() {
-        error!("invalid crontab value");
+        warn!("invalid crontab value");
     } else {
         schedule = schedule_result.unwrap();
     }
-    let mut next_date_time = calculate_next_date_time(&schedule);
+    let offset = FixedOffset::east_opt(5 * 60 * 60).unwrap();
+    let mut next_date_time = calculate_next_date_time(&schedule, &offset);
 
-    info!("ESP32 TIME: {:?}", Utc::now());
+    info!("ESP32 TIME: {:?}", Utc::now().with_timezone(&offset));
     let mut backup_date_time = "".to_owned();
     loop {
         send_i_am_alive_if_necessary(
@@ -73,11 +74,11 @@ pub fn orchestrate() {
             &mut peripheral_service,
         );
 
-        let now = Utc::now();
+        let now = Utc::now().with_timezone(&offset);
         let now_date_time = now.to_rfc2822();
         if now_date_time.eq(&next_date_time) || now_date_time == backup_date_time {
             backup_date_time = now_date_time.clone();
-            next_date_time = calculate_next_date_time(&schedule);
+            next_date_time = calculate_next_date_time(&schedule, &offset);
 
             if !peripheral_service.is_motion_detected() && detection {
                 info!("no detection");
@@ -130,13 +131,14 @@ fn synchronize_clock() {
     while sntp.get_sync_status() != SyncStatus::Completed {}
 }
 
-fn calculate_next_date_time(schedule: &Schedule) -> String {
+fn calculate_next_date_time(schedule: &Schedule, offset: &FixedOffset) -> String {
     let next_date_time = schedule
         .upcoming(Utc)
         .take(1)
         .into_iter()
         .last()
         .unwrap()
+        .with_timezone(offset)
         .to_rfc2822();
     next_date_time
 }

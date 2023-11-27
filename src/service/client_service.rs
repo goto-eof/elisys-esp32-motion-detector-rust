@@ -170,5 +170,6 @@ pub fn get_default_configuration(e: Error) -> Configuration {
         crontab: "* * * * *".to_owned(),
         i_am_alive_endpoint: DEFAULT_I_AM_ALIVE_URL.to_owned(),
         i_am_alive_interval_seconds: DEFAULT_I_AM_ALIVE_INTERVAL_SECONDS,
+        timezone_offset: 0,
     }
 }
