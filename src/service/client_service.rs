@@ -1,9 +1,11 @@
 use crate::{
     config::config::{
         DEFAULT_ALERT_URL, DEFAULT_I_AM_ALIVE_INTERVAL_SECONDS, DEFAULT_I_AM_ALIVE_URL,
+        DEVICE_DESCRIPTION, DEVICE_NAME, DEVICE_TYPE, REGISTER_DEVICE_URL,
     },
     dto::{
-        config_request::ConfigRequest, config_response::Configuration, request_alert::RequestAlert,
+        config_request::ConfigRequest, config_response::Configuration,
+        register_device::RegisterDeviceDTO, request_alert::RequestAlert,
         request_i_am_alive::RequestIAmAlive,
     },
 };
@@ -172,4 +174,25 @@ pub fn get_default_configuration(e: Error) -> Configuration {
         i_am_alive_interval_seconds: DEFAULT_I_AM_ALIVE_INTERVAL_SECONDS,
         timezone_offset: 0,
     }
+}
+
+pub fn register_device(mac_address: &str) -> anyhow::Result<(), anyhow::Error> {
+    let client = HttpClient::wrap(EspHttpConnection::new(&Default::default())?);
+
+    let payload = serde_json::to_string(&RegisterDeviceDTO::new(
+        mac_address.to_owned(),
+        DEVICE_TYPE.into(),
+        DEVICE_NAME.into(),
+        DEVICE_DESCRIPTION.into(),
+    ))
+    .unwrap();
+    let payload = payload.as_bytes();
+
+    info!("trying to send data...");
+    let result = post_request(payload, client, REGISTER_DEVICE_URL);
+    info!("data sent? {}", !result.is_err());
+    return match result {
+        Err(e) => Err(e.into()),
+        StandardOk(_) => Ok(()),
+    };
 }

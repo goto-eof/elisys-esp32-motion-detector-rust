@@ -5,7 +5,7 @@ use super::{
 use crate::{
     config::config::{self, CONFIGURATION_URL},
     dto::config_response::Configuration,
-    service::client_service::get_default_configuration,
+    service::client_service::{get_default_configuration, register_device},
     util::thread_util,
 };
 use chrono::{FixedOffset, Utc};
@@ -19,6 +19,16 @@ use std::time::Instant;
 pub fn orchestrate() {
     let mut peripheral_service = PeripheralService::new(config::WIFI_SSID, config::WIFI_PASS);
     let mac_address = peripheral_service.get_mac_address();
+
+    let register_device_result = register_device(&mac_address);
+    if register_device_result.is_err() {
+        error!(
+            "Failed to register the device: {:?}",
+            register_device_result
+        );
+    } else {
+        info!("Device registered successfully!");
+    }
 
     let configuration: Result<Configuration, anyhow::Error> =
         get_configuration(CONFIGURATION_URL, &mac_address);
