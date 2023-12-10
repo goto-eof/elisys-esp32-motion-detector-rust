@@ -43,7 +43,7 @@ I suppose that the environment is configured correctly, so that in order to run 
 
 ![board](images/motion_sensor.jpg)
 
-I developed this software on Linux (Ubuntu). For more info about how to configure your environment you can take a look [here](https://github.com/goto-eof/esp32-morse-rust/tree/master/morse_esp32).
+I developed this software on Linux (Ubuntu). For more info about how to configure your environment you can take a look [here]([https://github.com/goto-eof/esp32-morse-rust/tree/master/morse_esp32](https://dodu.it/esp32-rust-configure-environment-linux-ubuntu/)).
 
 If you found a bug please contact me [here](https://andre-i.eu/#contactme).
 
